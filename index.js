@@ -9,17 +9,6 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => console.error('Error loading the data:', error));
 
-    function displayData(data) {
-        const container = document.getElementById('data-container');
-        container.innerHTML = ''; // Clear existing data
-        data.forEach(flight => {
-            const flightElement = document.createElement('div');
-            flightElement.classList.add('flight-data');
-            flightElement.textContent = `Origin: ${flight.ori}, Destination: ${flight.dest}, Airline: ${flight.air}, Mean Delay: ${flight.mean}, Median Delay: ${flight.median}, Mode Delay: ${flight.mode}, Top 10% Delay: ${flight.q90}, Count: ${flight.n}`;
-            container.appendChild(flightElement);
-        });
-    }
-
     function populateFilters(data) {
         const airlineFilter = document.getElementById('airlineFilter');
         const originFilter = document.getElementById('originFilter');
@@ -36,6 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Set default values
         originFilter.value = 'Tehran';
         destinationFilter.value = 'Mashhad';
+        metricSelect.value = 'median';
         filterData();
     }
 
@@ -48,10 +38,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    function createChart(data) {
+    function createChart(data, metric = 'mean') {
         const ctx = document.getElementById('delayChart').getContext('2d');
         const labels = data.map(flight => `${flight.air}`);
-        const meanDelays = data.map(flight => flight.mean);
+        const metricValues = data.map(flight => flight[metric]);
+        const flightCounts = data.map(flight => flight.n); // Gather the flight count data
 
         // If a chart instance exists, destroy it before creating a new one
         if (myChart !== null) {
@@ -63,8 +54,8 @@ document.addEventListener('DOMContentLoaded', function() {
             data: {
                 labels: labels,
                 datasets: [{
-                    label: 'Average Delay (minutes)',
-                    data: meanDelays,
+                    label: '',
+                    data: metricValues,
                     backgroundColor: [
                         'rgba(217, 3, 104, 0.6)',
                         'rgba(46, 41, 78, 0.6)',
@@ -79,7 +70,29 @@ document.addEventListener('DOMContentLoaded', function() {
             options: {
                 scales: {
                     y: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: `${metric.charAt(0).toUpperCase() + metric.slice(1)} Delay (minutes)`
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false // Hide the legend
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const index = context.dataIndex;
+                                const metricValue = context.dataset.data[index];
+                                const flightCount = flightCounts[index];
+                                return [
+                                    `${metric.charAt(0).toUpperCase() + metric.slice(1)} Delay: ${metricValue.toFixed(1)} mins`,
+                                    `Number of Recorded Flights: ${flightCount}`
+                                ];
+                            }
+                        }
                     }
                 }
             }
@@ -93,13 +106,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 const selectedAirline = document.getElementById('airlineFilter').value;
                 const selectedOrigin = document.getElementById('originFilter').value;
                 const selectedDestination = document.getElementById('destinationFilter').value;
+                const selectedMetric = document.getElementById('metricSelect').value;
                 
                 const filteredData = data.filter(flight => 
                     (flight.air === selectedAirline || selectedAirline === 'All') &&
                     (flight.ori === selectedOrigin || selectedOrigin === 'All') &&
                     (flight.dest === selectedDestination || selectedDestination === 'All')
                 );
-                createChart(filteredData); // Update this line to display the chart
+                createChart(filteredData, selectedMetric);
             })
             .catch(error => console.error('Error re-loading the data:', error));
     }
@@ -107,4 +121,5 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('airlineFilter').addEventListener('change', filterData);
     document.getElementById('originFilter').addEventListener('change', filterData);
     document.getElementById('destinationFilter').addEventListener('change', filterData);
+    document.getElementById('metricSelect').addEventListener('change', filterData);
 });

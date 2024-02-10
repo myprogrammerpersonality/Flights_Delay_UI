@@ -31,6 +31,16 @@
             <option value="All">All Destinations</option>
             <!-- Options will be populated by JavaScript -->
         </select>
+
+        <label for="metricSelect">Choose a Metric:</label>
+        <select id="metricSelect">
+            <option value="mean">Mean Delay</option>
+            <option value="median">Median Delay</option>
+            <option value="mode">Mode Delay</option>
+            <option value="q90">Top 10% Delay</option>
+            <option value="n">Count</option>
+        </select>
+
     </div>
     <div id="data-container"></div>
     <!-- Placeholder for charts -->
