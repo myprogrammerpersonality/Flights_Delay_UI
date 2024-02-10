@@ -18,55 +18,23 @@
             <option value="All">All Airlines</option>
             <!-- Options will be populated by JavaScript -->
         </select>
+
+        <label for="originFilter">Choose an Origin:</label>
+        <select id="originFilter">
+            <option value="All">All Origins</option>
+            <!-- Options will be populated by JavaScript -->
+        </select>
+        
+        <label for="destinationFilter">Choose a Destination:</label>
+        <select id="destinationFilter">
+            <option value="All">All Destinations</option>
+            <!-- Options will be populated by JavaScript -->
+        </select>
     </div>
     <div id="data-container"></div>
     <!-- Placeholder for charts -->
     <canvas id="delayChart"></canvas>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            fetch('flights_delay_stats.json')
-                .then(response => response.json())
-                .then(data => {
-                    // console.log(data); // For testing, to see if data loads correctly
-                    populateFilters(data);
-                    displayData(data); // Function to display data on the page
-                })
-                .catch(error => console.error('Error loading the data:', error));
-
-            function displayData(data) {
-                const container = document.getElementById('data-container');
-                container.innerHTML = ''; // Clear existing data
-                data.forEach(flight => {
-                    const flightElement = document.createElement('div');
-                    flightElement.classList.add('flight-data');
-                    flightElement.textContent = `Origin: ${flight.ori}, Destination: ${flight.dest}, Airline: ${flight.air}, Mean Delay: ${flight.mean}`;
-                    container.appendChild(flightElement);
-                });
-            }
-
-            function populateFilters(data) {
-                const airlineFilter = document.getElementById('airlineFilter');
-                const airlines = [...new Set(data.map(flight => flight.air))]; // Unique airlines
-                airlines.forEach(airline => {
-                    const option = document.createElement('option');
-                    option.value = airline;
-                    option.textContent = airline;
-                    airlineFilter.appendChild(option);
-                });
-            }
-
-            document.getElementById('airlineFilter').addEventListener('change', function() {
-                fetch('flights_delay_stats.json')
-                    .then(response => response.json())
-                    .then(data => {
-                        const selectedAirline = this.value;
-                        const filteredData = data.filter(flight => flight.air === selectedAirline || selectedAirline === 'All');
-                        displayData(filteredData); // Clear the container and display filtered data
-                    })
-                    .catch(error => console.error('Error re-loading the data:', error));
-            });
-        });
-    </script>
+    <script src="index.js"></script>
 </body>
 </html>
