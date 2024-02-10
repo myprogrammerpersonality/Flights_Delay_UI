@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
         data.forEach(flight => {
             const flightElement = document.createElement('div');
             flightElement.classList.add('flight-data');
-            flightElement.textContent = `Origin: ${flight.ori}, Destination: ${flight.dest}, Airline: ${flight.air}, Mean Delay: ${flight.mean}`;
+            flightElement.textContent = `Origin: ${flight.ori}, Destination: ${flight.dest}, Airline: ${flight.air}, Mean Delay: ${flight.mean}, Median Delay: ${flight.median}, Mode Delay: ${flight.mode}, Top 10% Delay: ${flight.q90}, Count: ${flight.n}`;
             container.appendChild(flightElement);
         });
     }
