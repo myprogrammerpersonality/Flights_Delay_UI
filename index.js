@@ -1,9 +1,11 @@
+let myChart = null;
+
 document.addEventListener('DOMContentLoaded', function() {
     fetch('flights_delay_stats.json')
         .then(response => response.json())
         .then(data => {
             populateFilters(data);
-            displayData(data); // Function to display data on the page
+            createChart(data);
         })
         .catch(error => console.error('Error loading the data:', error));
 
@@ -41,6 +43,44 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    function createChart(data) {
+        const ctx = document.getElementById('delayChart').getContext('2d');
+        const labels = data.map(flight => `${flight.ori} to ${flight.dest}`);
+        const meanDelays = data.map(flight => flight.mean);
+
+        // If a chart instance exists, destroy it before creating a new one
+        if (myChart !== null) {
+            myChart.destroy();
+        }
+
+        myChart = new Chart(ctx, {
+            type: 'bar', // Change this to 'line', 'pie', etc., based on preference
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Average Delay (minutes)',
+                    data: meanDelays,
+                    backgroundColor: [
+                        'rgba(217, 3, 104, 0.6)',
+                        'rgba(46, 41, 78, 0.6)',
+                    ],
+                    borderColor: [
+                        'rgba(217, 3, 104, 1)',
+                        'rgba(46, 41, 78, 1)',
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
     function filterData() {
         fetch('flights_delay_stats.json')
             .then(response => response.json())
@@ -54,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     (flight.ori === selectedOrigin || selectedOrigin === 'All') &&
                     (flight.dest === selectedDestination || selectedDestination === 'All')
                 );
-                displayData(filteredData); // Clear the container and display filtered data
+                createChart(filteredData); // Update this line to display the chart
             })
             .catch(error => console.error('Error re-loading the data:', error));
     }
