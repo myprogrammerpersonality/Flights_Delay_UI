@@ -3,17 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Flight Data Visualization</title>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <title>Flight Data Visualization</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .flight-data { margin-bottom: 10px; }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Welcome to Flight Data Visualization</h1>
-        <p>This is a simple static website hosted on Vercel.</p>
+    <h1>Welcome to Flight Data Visualization</h1>
+    <div>
+        <label for="airlineFilter">Choose an Airline:</label>
+        <select id="airlineFilter">
+            <option value="All">All Airlines</option>
+            <!-- Options will be populated by JavaScript -->
+        </select>
     </div>
+    <div id="data-container"></div>
+    <!-- Placeholder for charts -->
+    <canvas id="delayChart"></canvas>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('flights_delay_stats.json')
+                .then(response => response.json())
+                .then(data => {
+                    // console.log(data); // For testing, to see if data loads correctly
+                    populateFilters(data);
+                    displayData(data); // Function to display data on the page
+                })
+                .catch(error => console.error('Error loading the data:', error));
+
+            function displayData(data) {
+                const container = document.getElementById('data-container');
+                container.innerHTML = ''; // Clear existing data
+                data.forEach(flight => {
+                    const flightElement = document.createElement('div');
+                    flightElement.classList.add('flight-data');
+                    flightElement.textContent = `Origin: ${flight.ori}, Destination: ${flight.dest}, Airline: ${flight.air}, Mean Delay: ${flight.mean}`;
+                    container.appendChild(flightElement);
+                });
+            }
+
+            function populateFilters(data) {
+                const airlineFilter = document.getElementById('airlineFilter');
+                const airlines = [...new Set(data.map(flight => flight.air))]; // Unique airlines
+                airlines.forEach(airline => {
+                    const option = document.createElement('option');
+                    option.value = airline;
+                    option.textContent = airline;
+                    airlineFilter.appendChild(option);
+                });
+            }
+
+            document.getElementById('airlineFilter').addEventListener('change', function() {
+                fetch('flights_delay_stats.json')
+                    .then(response => response.json())
+                    .then(data => {
+                        const selectedAirline = this.value;
+                        const filteredData = data.filter(flight => flight.air === selectedAirline || selectedAirline === 'All');
+                        displayData(filteredData); // Clear the container and display filtered data
+                    })
+                    .catch(error => console.error('Error re-loading the data:', error));
+            });
+        });
+    </script>
 </body>
 </html>
