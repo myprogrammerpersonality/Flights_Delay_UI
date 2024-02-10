@@ -25,13 +25,18 @@ document.addEventListener('DOMContentLoaded', function() {
         const originFilter = document.getElementById('originFilter');
         const destinationFilter = document.getElementById('destinationFilter');
         
-        const airlines = [...new Set(data.map(flight => flight.air))];
-        const origins = [...new Set(data.map(flight => flight.ori))];
-        const destinations = [...new Set(data.map(flight => flight.dest))];
+        const airlines = [...new Set(data.map(flight => flight.air))].sort();
+        const origins = [...new Set(data.map(flight => flight.ori))].sort();
+        const destinations = [...new Set(data.map(flight => flight.dest))].sort();
 
         populateFilter(airlineFilter, airlines);
         populateFilter(originFilter, origins);
         populateFilter(destinationFilter, destinations);
+
+        // Set default values
+        originFilter.value = 'Tehran';
+        destinationFilter.value = 'Mashhad';
+        filterData();
     }
 
     function populateFilter(filterElement, items) {
@@ -45,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function createChart(data) {
         const ctx = document.getElementById('delayChart').getContext('2d');
-        const labels = data.map(flight => `${flight.ori} to ${flight.dest}`);
+        const labels = data.map(flight => `${flight.air}`);
         const meanDelays = data.map(flight => flight.mean);
 
         // If a chart instance exists, destroy it before creating a new one
@@ -54,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         myChart = new Chart(ctx, {
-            type: 'bar', // Change this to 'line', 'pie', etc., based on preference
+            type: 'bar',
             data: {
                 labels: labels,
                 datasets: [{
