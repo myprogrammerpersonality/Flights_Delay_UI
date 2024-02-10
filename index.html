@@ -4,46 +4,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flight Data Visualization</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
     <script src="index.js" defer></script>
-    <style>
-        body { font-family: Arial, sans-serif; }
-        .flight-data { margin-bottom: 10px; }
-    </style>
 </head>
-<body>
-    <h1>Welcome to Flight Data Visualization</h1>
-    <div>
-        <label for="airlineFilter">Choose an Airline:</label>
-        <select id="airlineFilter">
-            <option value="All">All Airlines</option>
-            <!-- Options will be populated by JavaScript -->
-        </select>
-
-        <label for="originFilter">Choose an Origin:</label>
-        <select id="originFilter">
-            <option value="All">All Origins</option>
-            <!-- Options will be populated by JavaScript -->
-        </select>
+<body class="py-3">
+    <div class="container">
+        <h1>Welcome to Flight Data Visualization</h1>
         
-        <label for="destinationFilter">Choose a Destination:</label>
-        <select id="destinationFilter">
-            <option value="All">All Destinations</option>
-            <!-- Options will be populated by JavaScript -->
-        </select>
-
-        <label for="metricSelect">Choose a Metric:</label>
-        <select id="metricSelect">
-            <option value="mean">Mean Delay</option>
-            <option value="median">Median Delay</option>
-            <option value="mode">Mode Delay</option>
-            <option value="q90">Top 10% Delay</option>
-            <option value="n">Count</option>
-        </select>
-
-    </div>
-    <div id="data-container"></div>
-    <!-- Placeholder for charts -->
-    <canvas id="delayChart"></canvas>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mt-3">
+            <!-- Card for Airline Filter -->
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <label for="airlineFilter" class="form-label">Choose an Airline:</label>
+                        <select id="airlineFilter" class="form-select">
+                            <option value="All">All Airlines</option>
+                            <!-- Options will be populated by JavaScript -->
+                        </select>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Card for Origin Filter -->
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <label for="originFilter" class="form-label">Choose an Origin:</label>
+                        <select id="originFilter" class="form-select">
+                            <option value="All">All Origins</option>
+                            <!-- Options will be populated by JavaScript -->
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Card for Destination Filter -->
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <label for="destinationFilter" class="form-label">Choose a Destination:</label>
+                        <select id="destinationFilter" class="form-select">
+                            <option value="All">All Destinations</option>
+                            <!-- Options will be populated by JavaScript -->
+                        </select>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Card for Metric Filter -->
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <label for="metricSelect" class="form-label">Choose a Metric:</label>
+                        <select id="metricSelect" class="form-select">
+                            <option value="mean">Mean Delay</option>
+                            <option value="median">Median Delay</option>
+                            <option value="mode">Mode Delay</option>
+                            <option value="q90">Top 10% Delay</option>
+                            <option value="n">Count</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Chart Area -->
+        <div id="data-container"></div>
+        <canvas id="delayChart" class="mt-4"></canvas>
+    </div>    
 </body>
 </html>
